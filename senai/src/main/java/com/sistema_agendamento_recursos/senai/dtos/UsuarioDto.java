@@ -1,15 +1,16 @@
 package com.sistema_agendamento_recursos.senai.dtos;
 
 import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 
 public class UsuarioDto {
 
     private long id;
     private String nome;
     private String email;
-    private Integer senha;
+    private String senha;
     private String matricula;
-    private Data dataNascimento;
+    private LocalDateTime dataNascimento;
 
     public UsuarioDto() {
     }
@@ -38,11 +39,11 @@ public class UsuarioDto {
         this.email = email;
     }
 
-    public Integer getSenha() {
+    public String getSenha() {
         return senha;
     }
 
-    public void setSenha(Integer senha) {
+    public void setSenha(String senha) {
         this.senha = senha;
     }
 
@@ -54,11 +55,11 @@ public class UsuarioDto {
         this.matricula = matricula;
     }
 
-    public Data getDataNascimento() {
+    public LocalDateTime getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Data dataNascimento) {
+    public void setDataNascimento(LocalDateTime dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 }

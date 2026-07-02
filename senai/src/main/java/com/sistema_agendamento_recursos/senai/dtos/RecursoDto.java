@@ -1,17 +1,18 @@
 package com.sistema_agendamento_recursos.senai.dtos;
 
 import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 
 public class RecursoDto {
 
     private long id;
     private String descricao;
     private String tipo;
-    private Data diasSemanaDisponivel;
-    private Data dataInicialAgendamento;
-    private Data dataFinalAgendamento;
-    private Data horaInicialAgendamento;
-    private Data horaFinalAgendamento;
+    private LocalDateTime diasSemanaDisponivel;
+    private LocalDateTime dataInicialAgendamento;
+    private LocalDateTime dataFinalAgendamento;
+    private LocalDateTime horaInicialAgendamento;
+    private LocalDateTime horaFinalAgendamento;
 
     public RecursoDto() {
     }
@@ -40,43 +41,43 @@ public class RecursoDto {
         this.tipo = tipo;
     }
 
-    public Data getDiasSemanaDisponivel() {
+    public LocalDateTime getDiasSemanaDisponivel() {
         return diasSemanaDisponivel;
     }
 
-    public void setDiasSemanaDisponivel(Data diasSemanaDisponivel) {
+    public void setDiasSemanaDisponivel(LocalDateTime diasSemanaDisponivel) {
         this.diasSemanaDisponivel = diasSemanaDisponivel;
     }
 
-    public Data getDataInicialAgendamento() {
+    public LocalDateTime getDataInicialAgendamento() {
         return dataInicialAgendamento;
     }
 
-    public void setDataInicialAgendamento(Data dataInicialAgendamento) {
+    public void setDataInicialAgendamento(LocalDateTime dataInicialAgendamento) {
         this.dataInicialAgendamento = dataInicialAgendamento;
     }
 
-    public Data getDataFinalAgendamento() {
+    public LocalDateTime getDataFinalAgendamento() {
         return dataFinalAgendamento;
     }
 
-    public void setDataFinalAgendamento(Data dataFinalAgendamento) {
+    public void setDataFinalAgendamento(LocalDateTime dataFinalAgendamento) {
         this.dataFinalAgendamento = dataFinalAgendamento;
     }
 
-    public Data getHoraInicialAgendamento() {
+    public LocalDateTime getHoraInicialAgendamento() {
         return horaInicialAgendamento;
     }
 
-    public void setHoraInicialAgendamento(Data horaInicialAgendamento) {
+    public void setHoraInicialAgendamento(LocalDateTime horaInicialAgendamento) {
         this.horaInicialAgendamento = horaInicialAgendamento;
     }
 
-    public Data getHoraFinalAgendamento() {
+    public LocalDateTime getHoraFinalAgendamento() {
         return horaFinalAgendamento;
     }
 
-    public void setHoraFinalAgendamento(Data horaFinalAgendamento) {
+    public void setHoraFinalAgendamento(LocalDateTime horaFinalAgendamento) {
         this.horaFinalAgendamento = horaFinalAgendamento;
     }
 }

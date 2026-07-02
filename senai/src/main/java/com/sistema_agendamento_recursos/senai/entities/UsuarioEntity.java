@@ -2,6 +2,7 @@ package com.sistema_agendamento_recursos.senai.entities;
 
 import jakarta.persistence.*;
 import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuarios")
@@ -18,13 +19,13 @@ public class UsuarioEntity {
     private String email;
 
     @Column(name = "senha")
-    private Integer senha;
+    private String senha;
 
     @Column(name = "matricula")
     private String matricula;
 
     @Column(name = "")
-    private Data dataNascimento;
+    private LocalDateTime dataNascimento;
 
     public UsuarioEntity() {
     }
@@ -53,11 +54,11 @@ public class UsuarioEntity {
         this.email = email;
     }
 
-    public Integer getSenha() {
+    public String getSenha() {
         return senha;
     }
 
-    public void setSenha(Integer senha) {
+    public void setSenha(String senha) {
         this.senha = senha;
     }
 
@@ -69,12 +70,11 @@ public class UsuarioEntity {
         this.matricula = matricula;
     }
 
-    public Data getDataNascimento() {
+    public LocalDateTime getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Data dataNascimento) {
+    public void setDataNascimento(LocalDateTime dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
-
 }
