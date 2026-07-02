@@ -2,6 +2,9 @@ package com.sistema_agendamento_recursos.senai.controllers;
 
 import com.sistema_agendamento_recursos.senai.dtos.UsuarioDto;
 import com.sistema_agendamento_recursos.senai.servicies.UsuarioService;
+import com.sistema_agendamento_recursos.senai.sessao.SessaoDto;
+import com.sistema_agendamento_recursos.senai.sessao.SessaoUtil;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,10 +25,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String realizarLogin(String email, String senha,
-                                Model model, RedirectAttributes redirectAttributes) {
+    public String realizarLogin(String email,
+                                String senha,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
 
-        System.out.println("email =" + email + "senha = " + senha);
+        System.out.println("email =" + email + " senha = " + senha);
 
         UsuarioDto usuarioDto = new UsuarioDto();
         usuarioDto.setEmail(email);
@@ -35,13 +41,24 @@ public class UsuarioController {
 
         if (usuarioDtoRetorno.getNome() != null) {
 
-            redirectAttributes.addFlashAttribute("mensagem", "Bem-Vindo, " + usuarioDtoRetorno.getNome());
+            SessaoDto sessaoDto = new SessaoDto();
+
+            sessaoDto.setId(usuarioDtoRetorno.getId());
+            sessaoDto.setNome(usuarioDtoRetorno.getNome());
+            sessaoDto.setEmail(usuarioDtoRetorno.getEmail());
+
+            SessaoUtil.criarSessao(session, sessaoDto);
+
+            redirectAttributes.addFlashAttribute(
+                    "mensagem",
+                    "Bem-Vindo, " + usuarioDtoRetorno.getNome()
+            );
+
             return "redirect:/home";
         }
 
         model.addAttribute("erro", "E-mail ou senha inválido.");
         return "login";
-
     }
 
     @PostMapping("/usuarioinserir")
@@ -54,8 +71,14 @@ public class UsuarioController {
             return "usuarionserir";
         }
 
-        service.usuarioInserir(usuarioDto);
-        redirectAttributes.addFlashAttribute("mensagem", "Usuario cadastrado com sucesso.");
+        try {
+            service.usuarioInserir(usuarioDto);
+        } catch (IllegalArgumentException e) {
+            bindingResult.rejectValue("email", "email.duplicado", e.getMessage());
+            return "usuarioinserir";
+        }
+
+        redirectAttributes.addFlashAttribute("mensagem", "Usuário cadastrado com sucesso.");
 
         return "redirect:/usuariolista";
     }

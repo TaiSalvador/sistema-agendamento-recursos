@@ -2,6 +2,8 @@ package com.sistema_agendamento_recursos.senai.controllers;
 
 import com.sistema_agendamento_recursos.senai.dtos.UsuarioDto;
 import com.sistema_agendamento_recursos.senai.servicies.UsuarioService;
+import com.sistema_agendamento_recursos.senai.sessao.SessaoUtil;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,10 @@ public class PageUsuarioController {
     }
 
     @GetMapping("/login")
-    public String getLogin() {
+    public String getLogin(HttpSession session) {
+
+        SessaoUtil.removerSessao(session);
+
         return "login";
     }
 

@@ -54,6 +54,12 @@ public class UsuarioService {
 
     public void usuarioInserir(UsuarioDto usuarioDto) {
 
+        Optional<UsuarioEntity> usuarioOP = repository.findByEmail(usuarioDto.getEmail());
+
+        if (usuarioOP.isPresent()){
+            throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
+        }
+
         repository.save(converterDtoParaEntity(usuarioDto));
     }
 
