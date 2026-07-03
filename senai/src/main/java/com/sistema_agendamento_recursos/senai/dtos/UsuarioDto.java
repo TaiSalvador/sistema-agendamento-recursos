@@ -1,16 +1,32 @@
 package com.sistema_agendamento_recursos.senai.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import javax.xml.crypto.Data;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UsuarioDto {
 
     private long id;
+
+    @NotBlank(message = "O campo nome é obrigatório")
     private String nome;
+
     private String email;
+
+    @NotBlank(message = "o campo senha é obrigatório")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).*$", message = "A senha deve conter pelo menos uma letra e um número")
+    @Size(min = 5, message = "A senha deve possuir no mínimo 5 caracteres")
     private String senha;
+
+    @NotBlank(message = "O campo matrículo é obrigatório")
     private String matricula;
-    private LocalDateTime dataNascimento;
+
+    private LocalDate dataNascimento;
 
     public UsuarioDto() {
     }
@@ -55,11 +71,11 @@ public class UsuarioDto {
         this.matricula = matricula;
     }
 
-    public LocalDateTime getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(LocalDateTime dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 }

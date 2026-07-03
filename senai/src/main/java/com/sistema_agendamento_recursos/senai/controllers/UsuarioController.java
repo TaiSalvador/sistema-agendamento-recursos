@@ -68,13 +68,19 @@ public class UsuarioController {
             RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return "usuarionserir";
+            return "usuarioinserir";
         }
 
         try {
             service.usuarioInserir(usuarioDto);
         } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("email", "email.duplicado", e.getMessage());
+            if (e.getMessage().contains("data de nascimento")) {
+                bindingResult.rejectValue("dataNascimento", "data.invalida", e.getMessage()
+                );
+            } else {
+                bindingResult.rejectValue("email", "email.duplicado", e.getMessage()
+                );
+            }
             return "usuarioinserir";
         }
 

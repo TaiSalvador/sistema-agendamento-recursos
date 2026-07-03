@@ -54,6 +54,8 @@
                         <th scope="col">ID</th>
                         <th scope="col">Nome</th>
                         <th scope="col">E-mail</th>
+                        <th scope="col">Matrícula</th>
+                        <th scope="col">Data de Nascimento</th>
                         <th scope="col" class="text-end">Ações</th>
                     </tr>
                     </thead>
@@ -62,6 +64,8 @@
                         <td th:text="${usuario.id}">1</td>
                         <td th:text="${usuario.nome}">Maria Silva</td>
                         <td th:text="${usuario.email}">maria@email.com</td>
+                        <td th:text="${usuario.matricula}">126307</td>
+                        <td th:text="${usuario.dataNascimento}">20/07/2006</td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-outline-primary" th:href="@{/usuarioatualizar/{id}(id=${usuario.id})}">Editar</a>
                             <button th:data-id="${usuario.id}" class="excluir btn btn-sm btn-outline-danger">Excluir</button>

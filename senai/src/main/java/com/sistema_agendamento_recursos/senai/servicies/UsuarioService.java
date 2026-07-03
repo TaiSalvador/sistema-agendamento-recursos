@@ -5,6 +5,7 @@ import com.sistema_agendamento_recursos.senai.entities.UsuarioEntity;
 import com.sistema_agendamento_recursos.senai.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,10 +55,19 @@ public class UsuarioService {
 
     public void usuarioInserir(UsuarioDto usuarioDto) {
 
+        LocalDate hoje = LocalDate.now();
         Optional<UsuarioEntity> usuarioOP = repository.findByEmail(usuarioDto.getEmail());
 
         if (usuarioOP.isPresent()){
             throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
+        }
+
+        if (usuarioDto.getDataNascimento().isAfter(hoje)) {
+            throw new IllegalArgumentException("A data de nascimento não pode ser futura");
+        }
+
+        if (usuarioDto.getDataNascimento().isBefore(hoje.minusYears(500))){
+            throw new IllegalArgumentException("A data de nascimento inválida");
         }
 
         repository.save(converterDtoParaEntity(usuarioDto));
@@ -88,6 +98,8 @@ public class UsuarioService {
             UsuarioEntity usuario = usuarioOP.get();
             usuario.setNome(usuarioDto.getNome());
             usuario.setEmail(usuarioDto.getEmail());
+            usuario.setMatricula(usuarioDto.getMatricula());
+            usuario.setDataNascimento(usuarioDto.getDataNascimento());
             //--Não fazer a atualização da senha quando não vier
             if (!usuarioDto.getSenha().isEmpty()) {
                 usuario.setSenha(usuarioDto.getSenha());
@@ -107,6 +119,8 @@ public class UsuarioService {
         usuarioDto.setId(usuario.getId());
         usuarioDto.setNome(usuario.getNome());
         usuarioDto.setEmail(usuario.getEmail());
+        usuarioDto.setMatricula(usuario.getMatricula());
+        usuarioDto.setDataNascimento(usuario.getDataNascimento());
         return usuarioDto;
     }
 
@@ -117,6 +131,8 @@ public class UsuarioService {
         usuario.setNome(usuarioDto.getNome());
         usuario.setEmail(usuarioDto.getEmail());
         usuario.setSenha(usuarioDto.getSenha());
+        usuario.setMatricula(usuarioDto.getMatricula());
+        usuario.setDataNascimento(usuarioDto.getDataNascimento());
 
         return usuario;
     }
