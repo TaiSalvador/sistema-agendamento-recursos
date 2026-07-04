@@ -38,10 +38,7 @@ public class RecursoController {
     }
 
     @PostMapping("/recursoatualizar")
-    public String atualizar(
-            @Valid @ModelAttribute("recurso") RecursoDto dto,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public String atualizar(@Valid @ModelAttribute("recurso") RecursoDto dto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             return "recursoatualizar";
