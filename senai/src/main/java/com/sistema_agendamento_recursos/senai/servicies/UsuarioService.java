@@ -40,15 +40,22 @@ public class UsuarioService {
     }
 
     public void usuarioInserir(UsuarioDto usuarioDto) {
+
         LocalDate hoje = LocalDate.now();
+
         Optional<UsuarioEntity> usuarioOP = this.repository.findByEmail(usuarioDto.getEmail());
+
         if (usuarioOP.isPresent()) {
+
             throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
         } else if (usuarioDto.getDataNascimento().isAfter(hoje)) {
+
             throw new IllegalArgumentException("A data de nascimento não pode ser futura");
         } else if (usuarioDto.getDataNascimento().isBefore(hoje.minusYears(500L))) {
+
             throw new IllegalArgumentException("A data de nascimento inválida");
         } else {
+
             this.repository.save(this.converterDtoParaEntity(usuarioDto));
         }
     }

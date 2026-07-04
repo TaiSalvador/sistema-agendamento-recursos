@@ -3,7 +3,9 @@ package com.sistema_agendamento_recursos.senai.controllers;
 import com.sistema_agendamento_recursos.senai.dtos.RecursoDto;
 import com.sistema_agendamento_recursos.senai.servicies.RecursoService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,20 +23,32 @@ public class RecursoController {
     }
 
     @PostMapping("/recursoinserir")
-    public String inserir(
-            @Valid @ModelAttribute("recurso") RecursoDto dto,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+    public String inserir(@Valid @ModelAttribute("recurso") RecursoDto recursoDto,
+                          BindingResult result,
+                          RedirectAttributes redirectAttributes,
+                          Model model) {
 
-        if (bindingResult.hasErrors()) {
+        if (result.hasErrors()) {
             return "recursoinserir";
         }
 
-        service.inserir(dto);
+        try {
 
-        redirectAttributes.addFlashAttribute("mensagem", "Recurso cadastrado com sucesso.");
+            service.inserir(recursoDto);
 
-        return "redirect:/recursos";
+            redirectAttributes.addFlashAttribute(
+                    "mensagem",
+                    "Recurso cadastrado com sucesso!"
+            );
+
+            return "redirect:/recursolista";
+
+        } catch (IllegalArgumentException e) {
+
+            model.addAttribute("erro", e.getMessage());
+
+            return "recursoinserir";
+        }
     }
 
     @PostMapping("/recursoatualizar")
@@ -55,13 +69,8 @@ public class RecursoController {
     }
 
     @DeleteMapping("/recursoexcluir/{id}")
-    public String excluir(@PathVariable Long id,
-                          RedirectAttributes redirectAttributes) {
-
+    public ResponseEntity<String> excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         service.excluir(id);
-
-        redirectAttributes.addFlashAttribute("mensagem", "Recurso excluído com sucesso.");
-
-        return "redirect:/recursos";
+        return ResponseEntity.ok().body("Excluido");
     }
 }

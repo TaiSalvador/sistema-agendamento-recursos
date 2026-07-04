@@ -16,12 +16,7 @@ public class PageRecursoController {
         this.service = service;
     }
 
-    @GetMapping("/recursos")
-    public String get(){
-        return "recursolista";
-    }
-
-    @GetMapping("/recursoslista")
+    @GetMapping("/recursolista")
     public String lista(Model model) {
 
         model.addAttribute("recursos", service.obterListaRecurso());
@@ -31,6 +26,8 @@ public class PageRecursoController {
 
     @GetMapping("/recursoinserir")
     public String inserir(Model model) {
+
+        RecursoDto dto = new RecursoDto();
 
         model.addAttribute("recurso", new RecursoDto());
 

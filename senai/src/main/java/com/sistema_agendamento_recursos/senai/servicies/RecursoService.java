@@ -5,6 +5,7 @@ import com.sistema_agendamento_recursos.senai.entities.RecursoEntity;
 import com.sistema_agendamento_recursos.senai.repository.RecursoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,34 @@ public class RecursoService {
         return toDto(r);
     }
 
-    public void inserir(RecursoDto dto) {
-        repository.save(toEntity(dto));
+    public void inserir(RecursoDto recursoDto) {
+
+        LocalDate hoje = LocalDate.now();
+
+        if (recursoDto.getDataInicialAgendamento().isBefore(hoje)) {
+
+            throw new IllegalArgumentException(
+                    "A data inicial do agendamento não pode ser anterior à data atual."
+            );
+
+        } else if (recursoDto.getDataFinalAgendamento()
+                .isBefore(recursoDto.getDataInicialAgendamento())) {
+
+            throw new IllegalArgumentException(
+                    "A data final deve ser posterior ou igual à data inicial."
+            );
+
+        } else if (!recursoDto.getHoraFinalAgendamento()
+                .isAfter(recursoDto.getHoraInicialAgendamento())) {
+
+            throw new IllegalArgumentException(
+                    "A hora final deve ser maior que a hora inicial."
+            );
+
+        } else {
+
+            repository.save(toEntity(recursoDto));
+        }
     }
 
     public void atualizar(RecursoDto dto) {
