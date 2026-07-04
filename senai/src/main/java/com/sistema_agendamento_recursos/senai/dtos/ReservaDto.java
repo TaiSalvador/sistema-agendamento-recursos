@@ -1,18 +1,29 @@
 package com.sistema_agendamento_recursos.senai.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ReservaDto {
 
     private long id;
-    private String usuario;
-    private String recurso;
+
+    @NotNull(message = "O usuário é obrigatório.")
+    private Long usuario;
+
+    @NotNull(message = "O recurso é obrigatório.")
+    private Long recurso;
+
+    @NotNull(message = "A data é obrigatória.")
     private LocalDate data;
+
+    @NotNull(message = "A hora inicial é obrigatória.")
     private LocalTime horaInicial;
+
+    @NotNull(message = "A hora final é obrigatória.")
     private LocalTime horaFinal;
-    private LocalDate dataCancelamento;
-    private String observacao;
+
 
     public ReservaDto() {
     }
@@ -25,19 +36,19 @@ public class ReservaDto {
         this.id = id;
     }
 
-    public String getUsuario() {
+    public Long getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(Long usuario) {
         this.usuario = usuario;
     }
 
-    public String getRecurso() {
+    public Long getRecurso() {
         return recurso;
     }
 
-    public void setRecurso(String recurso) {
+    public void setRecurso(Long recurso) {
         this.recurso = recurso;
     }
 
@@ -63,21 +74,5 @@ public class ReservaDto {
 
     public void setHoraFinal(LocalTime horaFinal) {
         this.horaFinal = horaFinal;
-    }
-
-    public LocalDate getDataCancelamento() {
-        return dataCancelamento;
-    }
-
-    public void setDataCancelamento(LocalDate dataCancelamento) {
-        this.dataCancelamento = dataCancelamento;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
     }
 }

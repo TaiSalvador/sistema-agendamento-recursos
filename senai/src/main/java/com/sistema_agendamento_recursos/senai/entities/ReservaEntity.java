@@ -1,6 +1,7 @@
 package com.sistema_agendamento_recursos.senai.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,13 +14,19 @@ public class ReservaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "usuario")
-    private String usuario;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    @NotNull(message = "O usuário é obrigatório.")
+    private UsuarioEntity usuario;
 
-    @Column(name = "recurso")
-    private String recurso;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "recurso_id", nullable = false)
+    @NotNull(message = "O recurso é obrigatório.")
+    private RecursoEntity recurso;
 
-    @Column(name = "data")
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    @NotNull(message = "A data é obrigatória.")
     private LocalDate data;
 
     @Column(name = "horaInicial")
@@ -45,19 +52,19 @@ public class ReservaEntity {
         this.id = id;
     }
 
-    public String getUsuario() {
+    public UsuarioEntity getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(UsuarioEntity usuario) {
         this.usuario = usuario;
     }
 
-    public String getRecurso() {
+    public RecursoEntity getRecurso() {
         return recurso;
     }
 
-    public void setRecurso(String recurso) {
+    public void setRecurso(RecursoEntity recurso) {
         this.recurso = recurso;
     }
 
