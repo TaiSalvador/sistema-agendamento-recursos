@@ -14,10 +14,10 @@ public class RecursoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "descrição")
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @Column(name = "tipo")
+    @Column(name = "tipo", nullable = false)
     private String tipo;
 
     @ElementCollection

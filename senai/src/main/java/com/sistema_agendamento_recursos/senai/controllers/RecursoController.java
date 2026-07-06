@@ -62,7 +62,7 @@ public class RecursoController {
 
         redirectAttributes.addFlashAttribute("mensagem", "Recurso atualizado com sucesso.");
 
-        return "redirect:/recursos";
+        return "redirect:/recursolista";
     }
 
     @DeleteMapping("/recursoexcluir/{id}")

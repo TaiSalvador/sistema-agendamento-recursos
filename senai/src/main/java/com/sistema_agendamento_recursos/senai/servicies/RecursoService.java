@@ -28,46 +28,22 @@ public class RecursoService {
         return toDto(r);
     }
 
-    public void inserir(RecursoDto recursoDto) {
+    public void inserir(RecursoDto dto){
 
-        LocalDate hoje = LocalDate.now();
+        validar(dto);
 
-        if (recursoDto.getDataInicialAgendamento().isBefore(hoje)) {
-
-            throw new IllegalArgumentException(
-                    "A data inicial do agendamento não pode ser anterior à data atual."
-            );
-
-        } else if (recursoDto.getDataFinalAgendamento()
-                .isBefore(recursoDto.getDataInicialAgendamento())) {
-
-            throw new IllegalArgumentException(
-                    "A data final deve ser posterior ou igual à data inicial."
-            );
-
-        } else if (!recursoDto.getHoraFinalAgendamento()
-                .isAfter(recursoDto.getHoraInicialAgendamento())) {
-
-            throw new IllegalArgumentException(
-                    "A hora final deve ser maior que a hora inicial."
-            );
-
-        } else {
-
-            repository.save(toEntity(recursoDto));
-        }
+        repository.save(toEntity(dto));
     }
 
-    public void atualizar(RecursoDto dto) {
+    public void atualizar(RecursoDto dto){
 
-        RecursoEntity r = repository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Recurso não encontrado"));
+        repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Recurso não encontrado"));
 
-        RecursoEntity atualizado = toEntity(dto);
-        atualizado.setId(dto.getId());
+        validar(dto);
 
-        repository.save(atualizado);
+        repository.save(toEntity(dto));
     }
-
     public void excluir(Long id) {
         repository.deleteById(id);
     }
@@ -104,5 +80,23 @@ public class RecursoService {
         dto.setHoraFinalAgendamento(r.getHoraFinalAgendamento());
 
         return dto;
+    }
+
+    private void validar(RecursoDto dto){
+
+        LocalDate hoje = LocalDate.now();
+
+        if(dto.getDataInicialAgendamento().isBefore(hoje)){
+            throw new IllegalArgumentException("A data inicial não pode ser anterior à data atual.");
+        }
+
+        if(dto.getDataFinalAgendamento().isBefore(dto.getDataInicialAgendamento())){
+            throw new IllegalArgumentException("A data final deve ser maior ou igual à inicial.");
+        }
+
+        if(!dto.getHoraFinalAgendamento().isAfter(dto.getHoraInicialAgendamento())){
+            throw new IllegalArgumentException("A hora final deve ser maior que a inicial.");
+        }
+
     }
 }

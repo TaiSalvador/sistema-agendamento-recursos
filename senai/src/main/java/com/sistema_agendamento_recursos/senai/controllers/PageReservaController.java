@@ -37,12 +37,12 @@ public class PageReservaController {
         return "reservainserir";
     }
 
-    @GetMapping("/reservaatualizar/{id}")
-    public String atualizar(@PathVariable Long id, Model model) {
+  //  @GetMapping("/reservaatualizar/{id}")
+    //public String atualizar(@PathVariable Long id, Model model) {
 
-        model.addAttribute("recurso", service.obterReservaPorId(id));
+      //  model.addAttribute("recurso", service.obterReservaPorId(id));
 
-        return "reservaatualizar";
-    }
+        //return "reservaatualizar";
+    //}
 
 }

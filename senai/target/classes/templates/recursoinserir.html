@@ -1,96 +1,267 @@
 <!doctype html>
-<html lang="pt-br" xmlns:th="http://www.senai.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cadastrar usuario</title>
+    <title>Cadastrar Recurso</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
+
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container">
+
         <a class="navbar-brand" th:href="@{/home}">Template</a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal">
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
 
         <div class="collapse navbar-collapse" id="menuPrincipal">
+
             <ul class="navbar-nav ms-auto">
+
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a>
+                    <a class="nav-link active" th:href="@{/home}">
+                        Home
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/usuariolista}">Usuarios</a>
+                    <a class="nav-link" th:href="@{/usuariolista}">
+                        Usuários
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/recursolista}">Recursos</a>
+                    <a class="nav-link" th:href="@{/recursolista}">
+                        Recursos
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">Sair</a>
+                    <a class="nav-link" th:href="@{/login}">
+                        Sair
+                    </a>
                 </li>
+
             </ul>
+
         </div>
+
     </div>
 </nav>
 
 <main class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-8">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h3 mb-1">Cadastrar recurso</h1>
-                    <p class="text-secondary mb-0">Preencha os dados para criar um novo cadastro.</p>
-                </div>
-            </div>
 
-            <div class="card shadow-sm">
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h3 class="mb-0">
+                        Cadastrar Recurso
+                    </h3>
+
+                </div>
+
                 <div class="card-body">
 
-                    <form th:action="@{/recursoinserir}" th:object="${recurso}" method="post">
+                    <!-- Erro vindo do Service -->
+                    <div class="alert alert-danger"
+                         th:if="${erro}"
+                         th:text="${erro}">
+                    </div>
+
+                    <form th:action="@{/recursoinserir}"
+                          th:object="${recurso}"
+                          method="post">
+
+                        <!-- DESCRIÇÃO -->
                         <div class="mb-3">
-                            <label class="form-label">Descrição</label>
-                            <input type="text" class="form-control" th:field="*{descricao}" placeholder="Digite a descrição">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tipo</label>
-                            <input type="text" class="form-control" th:field="*{tipo}" placeholder="Digite o tipo">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Dias disponíveis</label>
-                            <div th:each="dia : ${T(com.sistema_agendamento_recursos.senai.entities.DiaSemana).values()}">
-                                <label class="me-3">
-                                    <input type="checkbox" th:value="${dia}" th:field="*{diasDisponiveis}"><span th:text="${dia}"></span>
-                                </label>
+
+                            <label class="form-label">
+                                Descrição
+                            </label>
+
+                            <input
+                                    type="text"
+                                    th:field="*{descricao}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('descricao')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{descricao}">
                             </div>
+
                         </div>
+
+                        <!-- TIPO -->
                         <div class="mb-3">
-                            <label class="form-label">Data Inicial</label>
-                            <input type="date" class="form-control" th:field="*{dataInicialAgendamento}">
+
+                            <label class="form-label">
+                                Tipo
+                            </label>
+
+                            <input
+                                    type="text"
+                                    th:field="*{tipo}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('tipo')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{tipo}">
+                            </div>
+
                         </div>
+
+                        <!-- DIAS -->
                         <div class="mb-3">
-                            <label class="form-label">Data Final</label>
-                            <input type="date" class="form-control" th:field="*{dataFinalAgendamento}">
+
+                            <label class="form-label">
+                                Dias disponíveis
+                            </label>
+
+                            <div class="border rounded p-3">
+
+                                <div class="form-check"
+                                     th:each="dia : ${T(com.sistema_agendamento_recursos.senai.entities.DiaSemana).values()}">
+
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            th:field="*{diasDisponiveis}"
+                                            th:value="${dia}">
+
+                                    <label class="form-check-label"
+                                           th:text="${dia}">
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <div class="text-danger mt-2"
+                                 th:errors="*{diasDisponiveis}">
+                            </div>
+
                         </div>
+
+                        <!-- DATA INICIAL -->
                         <div class="mb-3">
-                            <label class="form-label">Hora Inicial</label>
-                            <input type="time" class="form-control" th:field="*{horaInicialAgendamento}">
+
+                            <label class="form-label">
+                                Data Inicial
+                            </label>
+
+                            <input
+                                    type="date"
+                                    th:field="*{dataInicialAgendamento}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('dataInicialAgendamento')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{dataInicialAgendamento}">
+                            </div>
+
                         </div>
+
+                        <!-- DATA FINAL -->
                         <div class="mb-3">
-                            <label class="form-label">Hora Final</label>
-                            <input type="time" class="form-control" th:field="*{horaFinalAgendamento}">
+
+                            <label class="form-label">
+                                Data Final
+                            </label>
+
+                            <input
+                                    type="date"
+                                    th:field="*{dataFinalAgendamento}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('dataFinalAgendamento')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{dataFinalAgendamento}">
+                            </div>
+
                         </div>
+
+                        <!-- HORA INICIAL -->
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Hora Inicial
+                            </label>
+
+                            <input
+                                    type="time"
+                                    th:field="*{horaInicialAgendamento}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('horaInicialAgendamento')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{horaInicialAgendamento}">
+                            </div>
+
+                        </div>
+
+                        <!-- HORA FINAL -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Hora Final
+                            </label>
+
+                            <input
+                                    type="time"
+                                    th:field="*{horaFinalAgendamento}"
+                                    class="form-control"
+                                    th:classappend="${#fields.hasErrors('horaFinalAgendamento')} ? ' is-invalid'">
+
+                            <div class="invalid-feedback"
+                                 th:errors="*{horaFinalAgendamento}">
+                            </div>
+
+                        </div>
+
                         <div class="d-flex justify-content-end gap-2">
-                            <a class="btn btn-outline-secondary" th:href="@{/recursolista}">Cancelar</a>
-                            <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+                            <a class="btn btn-secondary"
+                               th:href="@{/recursolista}">
+                                Cancelar
+                            </a>
+
+                            <button class="btn btn-primary"
+                                    type="submit">
+
+                                Cadastrar
+
+                            </button>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

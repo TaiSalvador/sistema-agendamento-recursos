@@ -16,17 +16,13 @@ public class ReservaEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
-    @NotNull(message = "O usuário é obrigatório.")
     private UsuarioEntity usuario;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "recurso_id", nullable = false)
-    @NotNull(message = "O recurso é obrigatório.")
     private RecursoEntity recurso;
 
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    @NotNull(message = "A data é obrigatória.")
+    @Column(name = "data", nullable = false)
     private LocalDate data;
 
     @Column(name = "horaInicial")
