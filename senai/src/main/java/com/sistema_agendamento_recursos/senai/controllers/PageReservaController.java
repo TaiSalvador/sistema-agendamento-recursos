@@ -16,13 +16,8 @@ public class PageReservaController {
         this.service = service;
     }
 
-    @GetMapping("/reservas")
-    public String get() {
-        return "reservalista";
-    }
-
-    @GetMapping("/reservaslista")
-    public String lista(Model model) {
+    @GetMapping("/reservalista")
+    public String listar(Model model) {
 
         model.addAttribute("reservas", service.obterListaReserva());
 
@@ -37,12 +32,20 @@ public class PageReservaController {
         return "reservainserir";
     }
 
-  //  @GetMapping("/reservaatualizar/{id}")
-    //public String atualizar(@PathVariable Long id, Model model) {
+    @GetMapping("/reservavisualizar/{id}")
+    public String visualizar(@PathVariable Long id, Model model) {
 
-      //  model.addAttribute("recurso", service.obterReservaPorId(id));
+        model.addAttribute("reserva", service.obterReservaPorId(id));
 
-        //return "reservaatualizar";
-    //}
+        return "reservavisualizar";
+    }
+
+    @GetMapping("/reservacancelar/{id}")
+    public String cancelar(@PathVariable Long id, Model model) {
+
+        model.addAttribute("reserva", service.obterReservaPorId(id));
+
+        return "reservacancelar";
+    }
 
 }

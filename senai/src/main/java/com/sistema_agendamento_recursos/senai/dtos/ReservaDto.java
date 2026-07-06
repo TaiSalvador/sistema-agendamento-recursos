@@ -1,5 +1,6 @@
 package com.sistema_agendamento_recursos.senai.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -24,6 +25,10 @@ public class ReservaDto {
     @NotNull(message = "A hora final é obrigatória.")
     private LocalTime horaFinal;
 
+    private LocalDate dataCancelamento;
+
+    @NotBlank(message = "Informe o motivo do cancelamento.")
+    private String observacao;
 
     public ReservaDto() {
     }
@@ -74,5 +79,21 @@ public class ReservaDto {
 
     public void setHoraFinal(LocalTime horaFinal) {
         this.horaFinal = horaFinal;
+    }
+
+    public LocalDate getDataCancelamento() {
+        return dataCancelamento;
+    }
+
+    public void setDataCancelamento(LocalDate dataCancelamento) {
+        this.dataCancelamento = dataCancelamento;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 }

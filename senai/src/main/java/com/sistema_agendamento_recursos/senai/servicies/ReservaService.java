@@ -15,16 +15,20 @@ import java.util.List;
 
 @Service
 public class ReservaService {
+
     private final ReservaRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final RecursoRepository recursoRepository;
 
-    public ReservaService(ReservaRepository repository, UsuarioRepository usuarioRepository, RecursoRepository recursoRepository) {
+    public ReservaService(ReservaRepository repository,
+                          UsuarioRepository usuarioRepository,
+                          RecursoRepository recursoRepository) {
 
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.recursoRepository = recursoRepository;
     }
+
 
     public List<ReservaDto> obterListaReserva() {
 
@@ -40,8 +44,8 @@ public class ReservaService {
             dto.setData(entity.getData());
             dto.setHoraInicial(entity.getHoraInicial());
             dto.setHoraFinal(entity.getHoraFinal());
-            //dto.setDataCancelamento(entity.getDataCancelamento());
-            //dto.setObservacao(entity.getObservacao());
+            dto.setDataCancelamento(entity.getDataCancelamento());
+            dto.setObservacao(entity.getObservacao());
 
             lista.add(dto);
         }
@@ -49,11 +53,30 @@ public class ReservaService {
         return lista;
     }
 
+    public ReservaDto obterReservaPorId(Long id) {
+
+        ReservaEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
+
+        ReservaDto dto = new ReservaDto();
+
+        dto.setId(entity.getId());
+        dto.setUsuario(entity.getUsuario().getId());
+        dto.setRecurso(entity.getRecurso().getId());
+        dto.setData(entity.getData());
+        dto.setHoraInicial(entity.getHoraInicial());
+        dto.setHoraFinal(entity.getHoraFinal());
+        dto.setDataCancelamento(entity.getDataCancelamento());
+        dto.setObservacao(entity.getObservacao());
+
+        return dto;
+    }
+
+
     public void inserir(ReservaDto dto) {
 
-        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow();
+        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow();
+        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
 
         ReservaEntity entity = new ReservaEntity();
 
@@ -62,21 +85,35 @@ public class ReservaService {
         entity.setData(dto.getData());
         entity.setHoraInicial(dto.getHoraInicial());
         entity.setHoraFinal(dto.getHoraFinal());
+
         entity.setDataCancelamento(null);
-       // entity.setObservacao(dto.getObservacao());
+        entity.setObservacao(null);
 
         repository.save(entity);
     }
 
-    public void excluir(Long id) {
+
+    public void cancelar(Long id, String observacao) {
+
         ReservaEntity reserva = repository.findById(id).orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
 
-        if (LocalDate.now().isAfter(reserva.getData())) {
-            throw new RuntimeException("Não é possível excluir uma reserva que já aconteceu.");
+        if (observacao == null || observacao.isBlank()) {
+            throw new RuntimeException("Informe o motivo do cancelamento.");
         }
 
-        repository.deleteById(id);
+        if (reserva.getDataCancelamento() != null) {
+            throw new RuntimeException("Esta reserva já foi cancelada.");
+        }
+
+
+        if (!LocalDate.now().isBefore(reserva.getData())) {
+            throw new RuntimeException("Não é possível cancelar esta reserva.");
+        }
+
+        reserva.setDataCancelamento(LocalDate.now());
+        reserva.setObservacao(observacao);
+
+        repository.save(reserva);
     }
 
 }
-

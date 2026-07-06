@@ -4,21 +4,28 @@ import jakarta.servlet.http.HttpSession;
 
 public class SessaoUtil {
 
-        private static final String USUARIO_LOGADO = "usuarioLogado";
+    private static final String USUARIO_LOGADO = "usuarioLogado";
 
-        public static void criarSessao(HttpSession session, SessaoDto usuario) {
-            session.setAttribute(USUARIO_LOGADO, usuario);
+    private SessaoUtil(){
+
+    }
+
+    public static void RegistrarSessao(HttpSession session, SessaoDto sessaoDto){
+        session.setAttribute(USUARIO_LOGADO, sessaoDto);
+    }
+
+    public static SessaoDto ObterSessao(HttpSession session) {
+        Object usuarioLogado = session.getAttribute(USUARIO_LOGADO);
+
+        if(usuarioLogado == null) {
+            return null;
         }
 
-        public static SessaoDto obterSessao(HttpSession session) {
-            return (SessaoDto) session.getAttribute(USUARIO_LOGADO);
-        }
+        return (SessaoDto) usuarioLogado;
+    }
 
-        public static void removerSessao(HttpSession session) {
-            session.removeAttribute(USUARIO_LOGADO);
-        }
-
-        public static boolean estaLogado(HttpSession session) {
-            return obterSessao(session) != null;
-        }
+    public static void RemoverSessao(HttpSession session) {
+        session.removeAttribute(USUARIO_LOGADO);
+        session.invalidate();
+    }
     }

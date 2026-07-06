@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -25,8 +22,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String realizarLogin(String email,
-                                String senha,
+    public String realizarLogin(@RequestParam String email,
+                                @RequestParam String senha,
                                 Model model,
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session) {
@@ -47,7 +44,7 @@ public class UsuarioController {
             sessaoDto.setNome(usuarioDtoRetorno.getNome());
             sessaoDto.setEmail(usuarioDtoRetorno.getEmail());
 
-            SessaoUtil.criarSessao(session, sessaoDto);
+            session.setAttribute("usuarioLogado", sessaoDto);
 
             redirectAttributes.addFlashAttribute(
                     "mensagem",
