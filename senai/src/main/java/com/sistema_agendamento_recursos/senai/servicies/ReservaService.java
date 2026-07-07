@@ -74,6 +74,10 @@ public class ReservaService {
 
     public void inserir(ReservaDto dto) {
 
+        if (dto == null) {
+            throw new RuntimeException("Dados da reserva não informados.");
+        }
+
         UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
         RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
@@ -85,7 +89,6 @@ public class ReservaService {
         entity.setData(dto.getData());
         entity.setHoraInicial(dto.getHoraInicial());
         entity.setHoraFinal(dto.getHoraFinal());
-
         entity.setDataCancelamento(null);
         entity.setObservacao(null);
 
