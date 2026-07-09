@@ -2,13 +2,14 @@ package com.sistema_agendamento_recursos.senai.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ReservaDto {
 
-    private long id;
+    private Long id;
 
     @NotNull(message = "O usuário é obrigatório.")
     private Long usuario;
@@ -17,27 +18,29 @@ public class ReservaDto {
     private Long recurso;
 
     @NotNull(message = "A data é obrigatória.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
 
     @NotNull(message = "A hora inicial é obrigatória.")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime horaInicial;
 
     @NotNull(message = "A hora final é obrigatória.")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime horaFinal;
 
     private LocalDate dataCancelamento;
 
-    @NotBlank(message = "Informe o motivo do cancelamento.")
     private String observacao;
 
     public ReservaDto() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -96,4 +99,5 @@ public class ReservaDto {
     public void setObservacao(String observacao) {
         this.observacao = observacao;
     }
+
 }

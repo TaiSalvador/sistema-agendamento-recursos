@@ -29,7 +29,6 @@ public class ReservaService {
         this.recursoRepository = recursoRepository;
     }
 
-
     public List<ReservaDto> obterListaReserva() {
 
         List<ReservaDto> lista = new ArrayList<>();
@@ -55,7 +54,8 @@ public class ReservaService {
 
     public ReservaDto obterReservaPorId(Long id) {
 
-        ReservaEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
+        ReservaEntity entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
 
         ReservaDto dto = new ReservaDto();
 
@@ -71,16 +71,34 @@ public class ReservaService {
         return dto;
     }
 
-
     public void inserir(ReservaDto dto) {
 
         if (dto == null) {
             throw new RuntimeException("Dados da reserva não informados.");
         }
 
-        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso())
+                .orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+
+        // Validação de conflito de horário
+        for (ReservaEntity reserva : repository.findAll()) {
+
+            if (reserva.getRecurso().getId() == dto.getRecurso()
+                    && reserva.getData().equals(dto.getData())
+                    && reserva.getDataCancelamento() == null) {
+
+                boolean conflito =
+                        dto.getHoraInicial().isBefore(reserva.getHoraFinal())
+                                && dto.getHoraFinal().isAfter(reserva.getHoraInicial());
+
+                if (conflito) {
+                    throw new RuntimeException("Já existe uma reserva para este recurso nesse horário.");
+                }
+            }
+        }
 
         ReservaEntity entity = new ReservaEntity();
 
@@ -95,22 +113,22 @@ public class ReservaService {
         repository.save(entity);
     }
 
-
     public void cancelar(Long id, String observacao) {
 
-        ReservaEntity reserva = repository.findById(id).orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
-
-        if (observacao == null || observacao.isBlank()) {
-            throw new RuntimeException("Informe o motivo do cancelamento.");
-        }
+        ReservaEntity reserva = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
 
         if (reserva.getDataCancelamento() != null) {
             throw new RuntimeException("Esta reserva já foi cancelada.");
         }
 
+        if (observacao == null || observacao.isBlank()) {
+            throw new RuntimeException("Informe o motivo do cancelamento.");
+        }
 
-        if (!LocalDate.now().isBefore(reserva.getData())) {
-            throw new RuntimeException("Não é possível cancelar esta reserva.");
+        // Só pode cancelar até 1 dia antes da reserva
+        if (LocalDate.now().isAfter(reserva.getData().minusDays(1))) {
+            throw new RuntimeException("A reserva só pode ser cancelada até um dia antes da data agendada.");
         }
 
         reserva.setDataCancelamento(LocalDate.now());

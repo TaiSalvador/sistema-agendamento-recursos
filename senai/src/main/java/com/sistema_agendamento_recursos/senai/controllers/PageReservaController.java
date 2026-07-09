@@ -1,7 +1,9 @@
 package com.sistema_agendamento_recursos.senai.controllers;
 
 import com.sistema_agendamento_recursos.senai.dtos.ReservaDto;
+import com.sistema_agendamento_recursos.senai.servicies.RecursoService;
 import com.sistema_agendamento_recursos.senai.servicies.ReservaService;
+import com.sistema_agendamento_recursos.senai.servicies.UsuarioService;
 import com.sistema_agendamento_recursos.senai.sessao.SessaoDto;
 import com.sistema_agendamento_recursos.senai.sessao.SessaoUtil;
 import jakarta.servlet.http.HttpSession;
@@ -10,48 +12,55 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.HashMap;
-
 @Controller
 public class PageReservaController {
 
-    private final ReservaService service;
+    private final ReservaService reservaService;
+    private final UsuarioService usuarioService;
+    private final RecursoService recursoService;
 
-    public PageReservaController(ReservaService service) {
-        this.service = service;
+    public PageReservaController(ReservaService reservaService,
+                                 UsuarioService usuarioService,
+                                 RecursoService recursoService) {
+        this.reservaService = reservaService;
+        this.usuarioService = usuarioService;
+        this.recursoService = recursoService;
     }
 
     @GetMapping("/reservalista")
-    public String listar(HttpSession session,
-                         Model model) {
+    public String listar(HttpSession session, Model model) {
 
         SessaoDto sessaoDto = SessaoUtil.ObterSessao(session);
 
-        if (sessaoDto == null){
+        if (sessaoDto == null) {
             return "redirect:/login";
         }
 
         model.addAttribute("usuarioLogado", sessaoDto);
-
-        model.addAttribute("reservas", service.obterListaReserva());
+        model.addAttribute("reservas", reservaService.obterListaReserva());
 
         return "reservalista";
     }
 
     @GetMapping("/reservainserir")
-    public String inserir(HttpSession session,
-                          Model model) {
-
+    public String inserir(HttpSession session, Model model) {
 
         SessaoDto sessaoDto = SessaoUtil.ObterSessao(session);
 
-        if (sessaoDto == null){
+        if (sessaoDto == null) {
             return "redirect:/login";
         }
 
         model.addAttribute("usuarioLogado", sessaoDto);
 
         model.addAttribute("reserva", new ReservaDto());
+
+        model.addAttribute("usuarios",
+                usuarioService.obterListaUsuarios());
+
+        model.addAttribute("recursos",
+                recursoService.obterListaRecurso());
+
 
         return "reservainserir";
     }
@@ -61,16 +70,14 @@ public class PageReservaController {
                              @PathVariable Long id,
                              Model model) {
 
-
         SessaoDto sessaoDto = SessaoUtil.ObterSessao(session);
 
-        if (sessaoDto == null){
+        if (sessaoDto == null) {
             return "redirect:/login";
         }
 
         model.addAttribute("usuarioLogado", sessaoDto);
-
-        model.addAttribute("reserva", service.obterReservaPorId(id));
+        model.addAttribute("reserva", reservaService.obterReservaPorId(id));
 
         return "reservavisualizar";
     }
@@ -80,16 +87,14 @@ public class PageReservaController {
                            @PathVariable Long id,
                            Model model) {
 
-
         SessaoDto sessaoDto = SessaoUtil.ObterSessao(session);
 
-        if (sessaoDto == null){
+        if (sessaoDto == null) {
             return "redirect:/login";
         }
 
         model.addAttribute("usuarioLogado", sessaoDto);
-
-        model.addAttribute("reserva", service.obterReservaPorId(id));
+        model.addAttribute("reserva", reservaService.obterReservaPorId(id));
 
         return "reservacancelar";
     }
