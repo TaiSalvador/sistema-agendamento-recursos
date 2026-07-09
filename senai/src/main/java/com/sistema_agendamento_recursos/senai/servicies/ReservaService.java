@@ -99,7 +99,6 @@ public class ReservaService {
         }
 
 
-
         // Validação de conflito de horário
         for (ReservaEntity reserva : repository.findAll()) {
 
@@ -120,10 +119,8 @@ public class ReservaService {
             }
 
         }
-
         // Salvar reserva
         ReservaEntity entity = new ReservaEntity();
-
 
         entity.setUsuario(usuario);
         entity.setRecurso(recurso);

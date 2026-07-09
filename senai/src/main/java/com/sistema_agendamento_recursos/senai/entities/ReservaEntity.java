@@ -11,7 +11,7 @@ public class ReservaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
