@@ -62,6 +62,10 @@
 
         <div class="card-body">
 
+          <div th:if="${erro}" class="alert alert-danger">
+            <span th:text="${erro}"></span>
+          </div>
+
           <form th:action="@{/reservainserir}"
                 th:object="${reserva}"
                 method="post">

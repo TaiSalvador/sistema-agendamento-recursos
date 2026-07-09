@@ -55,12 +55,9 @@ public class PageReservaController {
 
         model.addAttribute("reserva", new ReservaDto());
 
-        model.addAttribute("usuarios",
-                usuarioService.obterListaUsuarios());
+        model.addAttribute("usuarios", usuarioService.obterListaUsuarios());
 
-        model.addAttribute("recursos",
-                recursoService.obterListaRecurso());
-
+        model.addAttribute("recursos", recursoService.obterListaRecurso());
 
         return "reservainserir";
     }

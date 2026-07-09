@@ -35,23 +35,33 @@ public class ReservaController {
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("usuarios", usuarioService.obterListaUsuarios());
-
             model.addAttribute("recursos", recursoService.obterListaRecurso());
 
             return "reservainserir";
         }
 
 
-        service.inserir(dto);
+        try {
+
+            service.inserir(dto);
+
+            redirectAttributes.addFlashAttribute("mensagem", "Reserva cadastrada com sucesso!");
+
+            return "redirect:/reservalista";
 
 
-        redirectAttributes.addFlashAttribute(
-                "mensagem",
-                "Reserva cadastrada com sucesso!"
-        );
+        } catch (RuntimeException e) {
 
+            model.addAttribute("erro", e.getMessage());
 
-        return "redirect:/reservalista";
+            model.addAttribute("reserva", dto);
+
+            model.addAttribute("usuarios", usuarioService.obterListaUsuarios());
+
+            model.addAttribute("recursos", recursoService.obterListaRecurso());
+
+            return "reservainserir";
+        }
     }
 
     @PostMapping("/reservacancelar/{id}")

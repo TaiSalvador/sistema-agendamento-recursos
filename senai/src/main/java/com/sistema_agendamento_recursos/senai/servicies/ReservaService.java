@@ -77,30 +77,53 @@ public class ReservaService {
             throw new RuntimeException("Dados da reserva não informados.");
         }
 
-        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso())
-                .orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+
+        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+
+        LocalDate hoje = LocalDate.now();
+
+        // Não permite reservar uma data que já passou
+        if (dto.getData().isBefore(hoje)) {
+            throw new RuntimeException("Não é possível realizar reserva em uma data que já passou.");
+        }
+
+        // Limite máximo de 5 dias para reserva
+        LocalDate limite = hoje.plusDays(5);
+
+        if (dto.getData().isAfter(limite)) {
+            throw new RuntimeException("A reserva só pode ser feita com até 5 dias de antecedência.");
+
+        }
+
+
 
         // Validação de conflito de horário
         for (ReservaEntity reserva : repository.findAll()) {
 
-            if (reserva.getRecurso().getId() == dto.getRecurso()
-                    && reserva.getData().equals(dto.getData())
-                    && reserva.getDataCancelamento() == null) {
 
-                boolean conflito =
-                        dto.getHoraInicial().isBefore(reserva.getHoraFinal())
-                                && dto.getHoraFinal().isAfter(reserva.getHoraInicial());
+            // Mesmo recurso
+            if (reserva.getRecurso().getId() == recurso.getId()) {
+                // Mesmo dia e reserva ativa
+                if (reserva.getData().equals(dto.getData()) && reserva.getDataCancelamento() == null) {
+                    boolean horarioOcupado = dto.getHoraInicial().isBefore(reserva.getHoraFinal()) && dto.getHoraFinal().isAfter(reserva.getHoraInicial());
 
-                if (conflito) {
-                    throw new RuntimeException("Já existe uma reserva para este recurso nesse horário.");
+                    if (horarioOcupado) {
+                        throw new RuntimeException("Recurso indisponível por ocupação neste horário.");
+
+                    }
+
                 }
+
             }
+
         }
 
+        // Salvar reserva
         ReservaEntity entity = new ReservaEntity();
+
 
         entity.setUsuario(usuario);
         entity.setRecurso(recurso);
@@ -108,9 +131,11 @@ public class ReservaService {
         entity.setHoraInicial(dto.getHoraInicial());
         entity.setHoraFinal(dto.getHoraFinal());
         entity.setDataCancelamento(null);
-        entity.setObservacao(null);
+        entity.setObservacao(dto.getObservacao());
+
 
         repository.save(entity);
+
     }
 
     public void cancelar(Long id, String observacao) {
