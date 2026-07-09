@@ -12,7 +12,7 @@
 
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
   <div class="container">
-    <a class="navbar-brand" th:href="@{/home}">Template</a>
+    <a class="navbar-brand" th:href="@{/home}">Gestor de Reservas</a>
 
     <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse"
@@ -110,12 +110,6 @@
                th:href="@{/reservavisualizar/{id}(id=${reserva.id})}">
               Visualizar
             </a>
-
-            <a class="btn btn-warning btn-sm"
-               th:href="@{/reservacancelar/{id}(id=${reserva.id})}">
-              Cancelar
-            </a>
-
           </td>
 
         </tr>
