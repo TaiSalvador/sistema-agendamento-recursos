@@ -20,6 +20,10 @@ public class ReservaDto {
     @NotNull(message = "O recurso é obrigatório.")
     private Long recurso;
 
+    private String nomeUsuario;
+
+    private String descricaoRecurso;
+
     @NotNull(message = "A data é obrigatória.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
@@ -61,6 +65,22 @@ public class ReservaDto {
 
     public void setRecurso(Long recurso) {
         this.recurso = recurso;
+    }
+
+    public String getNomeUsuario() {
+        return nomeUsuario;
+    }
+
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
+    }
+
+    public String getDescricaoRecurso() {
+        return descricaoRecurso;
+    }
+
+    public void setDescricaoRecurso(String descricaoRecurso) {
+        this.descricaoRecurso = descricaoRecurso;
     }
 
     public LocalDate getData() {

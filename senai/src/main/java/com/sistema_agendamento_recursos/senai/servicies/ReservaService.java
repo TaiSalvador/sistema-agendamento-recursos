@@ -48,6 +48,8 @@ public class ReservaService {
             dto.setId(entity.getId());
             dto.setUsuario(entity.getUsuario().getId());
             dto.setRecurso(entity.getRecurso().getId());
+            dto.setNomeUsuario(entity.getUsuario().getNome());
+            dto.setDescricaoRecurso(entity.getRecurso().getDescricao());
             dto.setData(entity.getData());
             dto.setHoraInicial(entity.getHoraInicial());
             dto.setHoraFinal(entity.getHoraFinal());
@@ -71,6 +73,8 @@ public class ReservaService {
         dto.setId(entity.getId());
         dto.setUsuario(entity.getUsuario().getId());
         dto.setRecurso(entity.getRecurso().getId());
+        dto.setNomeUsuario(entity.getUsuario().getNome());
+        dto.setDescricaoRecurso(entity.getRecurso().getDescricao());
         dto.setData(entity.getData());
         dto.setHoraInicial(entity.getHoraInicial());
         dto.setHoraFinal(entity.getHoraFinal());

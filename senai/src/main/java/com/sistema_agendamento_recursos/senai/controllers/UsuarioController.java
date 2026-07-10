@@ -104,6 +104,36 @@ public class UsuarioController {
 
     }
 
+    @PostMapping("/cadastro")
+    public String cadastrar(@Valid @ModelAttribute("usuario") UsuarioDto dto,
+                            BindingResult bindingResult,
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "cadastro";
+        }
+
+        try {
+
+            service.usuarioInserir(dto);
+
+            redirectAttributes.addFlashAttribute(
+                    "mensagem",
+                    "Conta criada com sucesso! Faça o login."
+            );
+
+            return "redirect:/login";
+
+        } catch (IllegalArgumentException e) {
+
+            model.addAttribute("erro", e.getMessage());
+
+            return "cadastro";
+        }
+    }
+
+
     @DeleteMapping("/usuarioexcluir/{id}")
     public ResponseEntity<String> excluir(@PathVariable Long id) {
 
@@ -118,6 +148,5 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
 
         }
-
     }
 }

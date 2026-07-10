@@ -46,21 +46,27 @@ public class UsuarioService {
 
         LocalDate hoje = LocalDate.now();
 
-        Optional<UsuarioEntity> usuarioOP = this.repository.findByEmail(usuarioDto.getEmail());
-
-        if (usuarioOP.isPresent()) {
-
+        if (repository.findByEmail(usuarioDto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Já existe um usuário cadastrado com este e-mail.");
-        } else if (usuarioDto.getDataNascimento().isAfter(hoje)) {
-
-            throw new IllegalArgumentException("A data de nascimento não pode ser futura");
-        } else if (usuarioDto.getDataNascimento().isBefore(hoje.minusYears(500L))) {
-
-            throw new IllegalArgumentException("A data de nascimento inválida");
-        } else {
-
-            this.repository.save(this.converterDtoParaEntity(usuarioDto));
         }
+
+        if (repository.existsByMatricula(usuarioDto.getMatricula())) {
+            throw new IllegalArgumentException("Já existe um usuário cadastrado com esta matrícula.");
+        }
+
+        if (usuarioDto.getDataNascimento() == null) {
+            throw new IllegalArgumentException("A data de nascimento é obrigatória.");
+        }
+
+        if (usuarioDto.getDataNascimento().isAfter(hoje)) {
+            throw new IllegalArgumentException("A data de nascimento não pode ser futura.");
+        }
+
+        if (usuarioDto.getDataNascimento().isBefore(hoje.minusYears(500))) {
+            throw new IllegalArgumentException("A data de nascimento é inválida.");
+        }
+
+        repository.save(converterDtoParaEntity(usuarioDto));
     }
 
     public UsuarioDto obterUsuarioPorId(Long id) {

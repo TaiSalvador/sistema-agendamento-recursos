@@ -76,7 +76,7 @@
             <label class="form-label">Usuário</label>
             <input type="text"
                    class="form-control"
-                   th:value="${reserva.usuario}"
+                   th:value="${reserva.nomeUsuario}"
                    readonly>
           </div>
 
@@ -84,7 +84,7 @@
             <label class="form-label">Recurso</label>
             <input type="text"
                    class="form-control"
-                   th:value="${reserva.recurso}"
+                   th:value="${reserva.descricaoRecurso}"
                    readonly>
           </div>
 
@@ -112,7 +112,6 @@
                    readonly>
           </div>
 
-          <!-- Só aparece se a reserva foi cancelada -->
           <div class="mb-3" th:if="${reserva.dataCancelamento != null}">
             <label class="form-label">Data de Cancelamento</label>
             <input type="date"
@@ -121,7 +120,6 @@
                    readonly>
           </div>
 
-          <!-- Só aparece se a reserva foi cancelada -->
           <div class="mb-4" th:if="${reserva.dataCancelamento != null}">
             <label class="form-label">Observação</label>
             <textarea class="form-control"
@@ -133,7 +131,6 @@
 
           <div class="d-flex justify-content-end gap-2">
 
-            <!-- Só aparece se não estiver cancelada e a data for hoje ou futura -->
             <a class="btn btn-warning btn-sm"
                th:if="${reserva.dataCancelamento == null and reserva.data >= hoje}"
                th:href="@{/reservacancelar/{id}(id=${reserva.id})}">

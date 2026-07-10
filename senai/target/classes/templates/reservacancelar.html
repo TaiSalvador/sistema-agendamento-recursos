@@ -79,7 +79,7 @@
               <label class="form-label">Usuário</label>
               <input type="text"
                      class="form-control"
-                     th:value="${reserva.usuario}"
+                     th:value="${reserva.nomeUsuario}"
                      readonly>
             </div>
 
@@ -87,7 +87,7 @@
               <label class="form-label">Recurso</label>
               <input type="text"
                      class="form-control"
-                     th:value="${reserva.recurso}"
+                     th:value="${reserva.descricaoRecurso}"
                      readonly>
             </div>
 
@@ -115,7 +115,6 @@
                      readonly>
             </div>
 
-            <!-- Data do cancelamento -->
             <div class="mb-3">
               <label class="form-label">Data do Cancelamento</label>
               <input type="date"

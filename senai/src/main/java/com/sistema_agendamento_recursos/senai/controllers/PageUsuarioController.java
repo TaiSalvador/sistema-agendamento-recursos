@@ -100,4 +100,13 @@ public class PageUsuarioController {
         return "usuarioatualizar";
     }
 
+    @GetMapping("/cadastro")
+    public String telaCadastro(Model model) {
+
+        model.addAttribute("usuario", new UsuarioDto());
+
+        return "cadastro";
+    }
+
+
 }
