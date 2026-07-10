@@ -101,4 +101,22 @@ public class PageReservaController {
         return "reservacancelar";
     }
 
+    @GetMapping("/reservalistacancelada")
+    public String listaCancelada(HttpSession session, Model model) {
+
+        SessaoDto sessaoDto = SessaoUtil.ObterSessao(session);
+
+        if (sessaoDto == null) {
+            return "redirect:/login";
+        }
+
+
+        model.addAttribute("usuarioLogado", sessaoDto);
+
+        model.addAttribute("reservas", reservaService.obterListaReservaCancelada());
+
+
+        return "reservalistacancelada";
+    }
+
 }

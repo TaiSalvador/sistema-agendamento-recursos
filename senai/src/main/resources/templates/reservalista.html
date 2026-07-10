@@ -50,23 +50,35 @@
   </div>
 </nav>
 
+
 <main class="container py-4">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
 
     <h2>Lista de Reservas</h2>
 
-    <a class="btn btn-success"
-       th:href="@{/reservainserir}">
-      Nova Reserva
-    </a>
+    <div>
+
+      <a class="btn btn-danger me-2"
+         th:href="@{/reservalistacancelada}">
+        Reservas Canceladas
+      </a>
+
+      <a class="btn btn-success"
+         th:href="@{/reservainserir}">
+        Nova Reserva
+      </a>
+
+    </div>
 
   </div>
+
 
   <div class="alert alert-success"
        th:if="${mensagem}"
        th:text="${mensagem}">
   </div>
+
 
   <div class="card shadow">
 
@@ -88,9 +100,12 @@
 
         </thead>
 
+
         <tbody>
 
-        <tr th:each="reserva : ${reservas}">
+        <!-- Mostra somente reservas que NÃO foram canceladas -->
+        <tr th:each="reserva : ${reservas}"
+            th:if="${reserva.dataCancelamento == null}">
 
           <td th:text="${reserva.id}"></td>
 
@@ -110,15 +125,20 @@
                th:href="@{/reservavisualizar/{id}(id=${reserva.id})}">
               Visualizar
             </a>
+
           </td>
 
         </tr>
 
+
         <tr th:if="${#lists.isEmpty(reservas)}">
+
           <td colspan="7" class="text-center">
             Nenhuma reserva cadastrada.
           </td>
+
         </tr>
+
 
         </tbody>
 
@@ -129,6 +149,7 @@
   </div>
 
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

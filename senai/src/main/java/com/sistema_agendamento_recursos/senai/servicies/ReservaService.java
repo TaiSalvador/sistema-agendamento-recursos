@@ -38,6 +38,11 @@ public class ReservaService {
 
         for (ReservaEntity entity : repository.findAll()) {
 
+            // Ignora reservas canceladas
+            if (entity.getDataCancelamento() != null) {
+                continue;
+            }
+
             ReservaDto dto = new ReservaDto();
 
             dto.setId(entity.getId());
@@ -218,8 +223,7 @@ public class ReservaService {
 
     public void cancelar(Long id, String observacao) {
 
-        ReservaEntity reserva = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
+        ReservaEntity reserva = repository.findById(id).orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
 
 
         if (reserva.getDataCancelamento() != null) {
@@ -243,5 +247,29 @@ public class ReservaService {
 
         repository.save(reserva);
     }
+
+    public List<ReservaDto> obterListaReservaCancelada() {
+
+        List<ReservaDto> lista = new ArrayList<>();
+
+        for (ReservaEntity entity : repository.findByDataCancelamentoIsNotNull()) {
+
+            ReservaDto dto = new ReservaDto();
+
+            dto.setId(entity.getId());
+            dto.setUsuario(entity.getUsuario().getId());
+            dto.setRecurso(entity.getRecurso().getId());
+            dto.setData(entity.getData());
+            dto.setHoraInicial(entity.getHoraInicial());
+            dto.setHoraFinal(entity.getHoraFinal());
+            dto.setDataCancelamento(entity.getDataCancelamento());
+            dto.setObservacao(entity.getObservacao());
+
+            lista.add(dto);
+        }
+
+        return lista;
+    }
+
 
 }
