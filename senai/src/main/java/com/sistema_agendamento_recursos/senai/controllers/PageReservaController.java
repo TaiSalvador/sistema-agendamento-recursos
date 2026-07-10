@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
+
 @Controller
 public class PageReservaController {
 
@@ -76,6 +78,8 @@ public class PageReservaController {
         model.addAttribute("usuarioLogado", sessaoDto);
         model.addAttribute("reserva", reservaService.obterReservaPorId(id));
 
+        model.addAttribute("hoje", LocalDate.now());
+
         return "reservavisualizar";
     }
 
@@ -92,6 +96,7 @@ public class PageReservaController {
 
         model.addAttribute("usuarioLogado", sessaoDto);
         model.addAttribute("reserva", reservaService.obterReservaPorId(id));
+        model.addAttribute("hoje", LocalDate.now());
 
         return "reservacancelar";
     }
