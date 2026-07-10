@@ -10,6 +10,7 @@ import com.sistema_agendamento_recursos.senai.repository.ReservaRepository;
 import com.sistema_agendamento_recursos.senai.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ReservaService {
         this.usuarioRepository = usuarioRepository;
         this.recursoRepository = recursoRepository;
     }
+
 
     public List<ReservaDto> obterListaReserva() {
 
@@ -53,6 +55,7 @@ public class ReservaService {
         return lista;
     }
 
+
     public ReservaDto obterReservaPorId(Long id) {
 
         ReservaEntity entity = repository.findById(id)
@@ -72,6 +75,7 @@ public class ReservaService {
         return dto;
     }
 
+
     public void inserir(ReservaDto dto) {
 
         if (dto == null) {
@@ -79,57 +83,112 @@ public class ReservaService {
         }
 
 
-        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
 
-        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso()).orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+        RecursoEntity recurso = recursoRepository.findById(dto.getRecurso())
+                .orElseThrow(() -> new RuntimeException("Recurso não encontrado."));
+
 
         LocalDate hoje = LocalDate.now();
 
 
+        // Não permite data passada
         if (dto.getData().isBefore(hoje)) {
             throw new RuntimeException("Não é possível realizar reserva em uma data que já passou.");
         }
+
 
         // Limite máximo de 5 dias para reserva
         LocalDate limite = hoje.plusDays(5);
 
         if (dto.getData().isAfter(limite)) {
             throw new RuntimeException("A reserva só pode ser feita com até 5 dias de antecedência.");
-
         }
 
-        // Verifica se a data está dentro do período permitido do recurso
+
+        // Verifica se a data está dentro do período permitido pelo recurso
         if (dto.getData().isBefore(recurso.getDataInicialAgendamento())
                 || dto.getData().isAfter(recurso.getDataFinalAgendamento())) {
+
             throw new RuntimeException("A data da reserva está fora do período permitido para este recurso.");
         }
 
-// Verifica se o horário está dentro do horário permitido do recurso
+
+        // Verifica se o horário está dentro do horário permitido pelo recurso
         if (dto.getHoraInicial().isBefore(recurso.getHoraInicialAgendamento())
                 || dto.getHoraFinal().isAfter(recurso.getHoraFinalAgendamento())) {
-            throw new RuntimeException("O horário informado está fora do horário permitido para este recurso.");
+
+            throw new RuntimeException("O horário da reserva está fora do horário permitido para este recurso.");
         }
 
-// Verifica se o dia da semana é permitido
-        DiaSemana diaReserva = DiaSemana.valueOf(dto.getData().getDayOfWeek().name());
+
+        // Verifica o dia da semana
+        DayOfWeek dia = dto.getData().getDayOfWeek();
+
+        DiaSemana diaReserva;
+
+        switch (dia) {
+
+            case MONDAY:
+                diaReserva = DiaSemana.SEGUNDA;
+                break;
+
+            case TUESDAY:
+                diaReserva = DiaSemana.TERCA;
+                break;
+
+            case WEDNESDAY:
+                diaReserva = DiaSemana.QUARTA;
+                break;
+
+            case THURSDAY:
+                diaReserva = DiaSemana.QUINTA;
+                break;
+
+            case FRIDAY:
+                diaReserva = DiaSemana.SEXTA;
+                break;
+
+            case SATURDAY:
+                diaReserva = DiaSemana.SABADO;
+                break;
+
+            case SUNDAY:
+                diaReserva = DiaSemana.DOMINGO;
+                break;
+
+            default:
+                throw new RuntimeException("Dia inválido.");
+        }
+
 
         if (!recurso.getDiasDisponiveis().contains(diaReserva)) {
-            throw new RuntimeException("Este recurso não está disponível no dia da semana informado.");
+            throw new RuntimeException("Este recurso não está disponível neste dia da semana.");
         }
 
+
+
+        // Verifica conflito de horário
         for (ReservaEntity reserva : repository.findAll()) {
 
 
+            if (reserva.getRecurso().getId().equals(recurso.getId())) {
 
-            if (reserva.getRecurso().getId() == recurso.getId()) {
 
-                if (reserva.getData().equals(dto.getData()) && reserva.getDataCancelamento() == null) {
-                    boolean horarioOcupado = dto.getHoraInicial().isBefore(reserva.getHoraFinal()) && dto.getHoraFinal().isAfter(reserva.getHoraInicial());
+                if (reserva.getData().equals(dto.getData())
+                        && reserva.getDataCancelamento() == null) {
+
+
+                    boolean horarioOcupado =
+                            dto.getHoraInicial().isBefore(reserva.getHoraFinal())
+                                    &&
+                                    dto.getHoraFinal().isAfter(reserva.getHoraInicial());
+
 
                     if (horarioOcupado) {
                         throw new RuntimeException("Recurso indisponível por ocupação neste horário.");
-
                     }
 
                 }
@@ -137,6 +196,8 @@ public class ReservaService {
             }
 
         }
+
+
         // Salvar reserva
         ReservaEntity entity = new ReservaEntity();
 
@@ -153,26 +214,32 @@ public class ReservaService {
 
     }
 
+
+
     public void cancelar(Long id, String observacao) {
 
         ReservaEntity reserva = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reserva não encontrada."));
 
+
         if (reserva.getDataCancelamento() != null) {
             throw new RuntimeException("Esta reserva já foi cancelada.");
         }
+
 
         if (observacao == null || observacao.isBlank()) {
             throw new RuntimeException("Informe o motivo do cancelamento.");
         }
 
-        // Só pode cancelar até 1 dia antes da reserva
+
         if (LocalDate.now().isAfter(reserva.getData().minusDays(1))) {
             throw new RuntimeException("A reserva só pode ser cancelada até um dia antes da data agendada.");
         }
 
+
         reserva.setDataCancelamento(LocalDate.now());
         reserva.setObservacao(observacao);
+
 
         repository.save(reserva);
     }
