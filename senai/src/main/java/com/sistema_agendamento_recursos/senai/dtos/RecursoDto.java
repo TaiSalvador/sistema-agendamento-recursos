@@ -9,7 +9,7 @@ import java.util.List;
 
 public class RecursoDto {
 
-    private long id;
+    private Long id;
     @NotBlank(message = "A descrição é obrigatória")
     @Size(max = 100, message = "A descrição deve ter no máximo 100 caracteres")
     private String descricao;
@@ -36,11 +36,11 @@ public class RecursoDto {
     public RecursoDto() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

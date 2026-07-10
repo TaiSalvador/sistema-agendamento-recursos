@@ -3,6 +3,7 @@ package com.sistema_agendamento_recursos.senai.servicies;
 import com.sistema_agendamento_recursos.senai.dtos.RecursoDto;
 import com.sistema_agendamento_recursos.senai.entities.RecursoEntity;
 import com.sistema_agendamento_recursos.senai.repository.RecursoRepository;
+import com.sistema_agendamento_recursos.senai.repository.ReservaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,8 +15,11 @@ public class RecursoService {
 
     private final RecursoRepository repository;
 
-    public RecursoService(RecursoRepository repository) {
+    private final ReservaRepository reservaRepository;
+
+    public RecursoService(RecursoRepository repository, ReservaRepository reservaRepository) {
         this.repository = repository;
+        this.reservaRepository = reservaRepository;
     }
 
     public List<RecursoDto> obterListaRecurso() {
@@ -45,6 +49,19 @@ public class RecursoService {
         repository.save(toEntity(dto));
     }
     public void excluir(Long id) {
+
+        System.out.println("ID recebido: " + id);
+
+        boolean existe = reservaRepository.existsByRecursoId(id);
+
+        System.out.println("Existe reserva: " + existe);
+
+        if (existe) {
+            throw new RuntimeException(
+                    "Não é possível excluir este recurso porque ele possui reservas cadastradas."
+            );
+        }
+
         repository.deleteById(id);
     }
 

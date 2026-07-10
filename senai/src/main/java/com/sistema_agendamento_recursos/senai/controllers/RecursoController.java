@@ -66,8 +66,19 @@ public class RecursoController {
     }
 
     @DeleteMapping("/recursoexcluir/{id}")
-    public ResponseEntity<String> excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        service.excluir(id);
-        return ResponseEntity.ok().body("Excluido");
+    public ResponseEntity<String> excluir(@PathVariable Long id) {
+
+        try {
+
+            service.excluir(id);
+
+            return ResponseEntity.ok("Recurso excluído com sucesso.");
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
     }
 }

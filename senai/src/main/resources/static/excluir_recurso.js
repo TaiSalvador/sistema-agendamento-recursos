@@ -1,40 +1,44 @@
-// Adicione um ouvinte de eventos aos botões de exclusão
 document.querySelectorAll('.excluir').forEach(function(button) {
-    button.addEventListener('click',
-    function() {
+
+    button.addEventListener('click', function () {
+
         if (confirm('Confirma a exclusão?')) {
 
-            const linha = this.closest('tr'); // Obtém a linha atual da tabela
-
+            const linha = this.closest('tr');
             const id = this.dataset.id;
 
-            //console.log("id=" + id);
-
-            // Realize a chamada AJAX para excluir o recurso
             fetch(`/recursoexcluir/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                method: 'DELETE'
             })
-            .then(response => {
-                if (response.ok) {
-                    // A exclusão foi bem-sucedida
-                    console.log('Recurso excluído com sucesso.');
 
-                    // Remove a linha da tabela após a exclusão
+            .then(async response => {
+
+                const mensagem = await response.text();
+
+                if (response.ok) {
+
+                    alert(mensagem);
+
                     linha.remove();
+
                 } else {
-                    // A solicitação DELETE falhou
-                    console.error('Erro ao excluir recurso.');
-                    alert('Erro ao excluir recurso');
+
+                    alert(mensagem);
+
                 }
+
             })
+
             .catch(error => {
-                // Lidar com erros de rede ou outros erros
-                console.error('Erro de rede:', error);
-                alert('Erro de rede:' + error);
+
+                console.error(error);
+
+                alert("Erro de comunicação com o servidor.");
+
             });
+
         }
+
     });
+
 });

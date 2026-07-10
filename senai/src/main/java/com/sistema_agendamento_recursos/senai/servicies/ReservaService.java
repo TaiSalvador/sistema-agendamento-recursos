@@ -85,7 +85,7 @@ public class ReservaService {
 
         LocalDate hoje = LocalDate.now();
 
-        // Não permite reservar uma data que já passou
+
         if (dto.getData().isBefore(hoje)) {
             throw new RuntimeException("Não é possível realizar reserva em uma data que já passou.");
         }
@@ -99,13 +99,13 @@ public class ReservaService {
         }
 
 
-        // Validação de conflito de horário
+
         for (ReservaEntity reserva : repository.findAll()) {
 
 
-            // Mesmo recurso
+
             if (reserva.getRecurso().getId() == recurso.getId()) {
-                // Mesmo dia e reserva ativa
+
                 if (reserva.getData().equals(dto.getData()) && reserva.getDataCancelamento() == null) {
                     boolean horarioOcupado = dto.getHoraInicial().isBefore(reserva.getHoraFinal()) && dto.getHoraFinal().isAfter(reserva.getHoraInicial());
 

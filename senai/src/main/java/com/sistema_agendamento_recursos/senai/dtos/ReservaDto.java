@@ -18,7 +18,7 @@ public class ReservaDto {
     private Long usuario;
 
     @NotNull(message = "O recurso é obrigatório.")
-    private long recurso;
+    private Long recurso;
 
     @NotNull(message = "A data é obrigatória.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -39,12 +39,8 @@ public class ReservaDto {
     public ReservaDto() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void setId(Long id) {
@@ -59,11 +55,11 @@ public class ReservaDto {
         this.usuario = usuario;
     }
 
-    public long getRecurso() {
+    public Long getRecurso() {
         return recurso;
     }
 
-    public void setRecurso(long recurso) {
+    public void setRecurso(Long recurso) {
         this.recurso = recurso;
     }
 

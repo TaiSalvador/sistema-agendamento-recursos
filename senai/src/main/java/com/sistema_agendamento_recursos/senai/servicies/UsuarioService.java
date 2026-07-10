@@ -3,6 +3,7 @@ package com.sistema_agendamento_recursos.senai.servicies;
 
 import com.sistema_agendamento_recursos.senai.dtos.UsuarioDto;
 import com.sistema_agendamento_recursos.senai.entities.UsuarioEntity;
+import com.sistema_agendamento_recursos.senai.repository.ReservaRepository;
 import com.sistema_agendamento_recursos.senai.repository.UsuarioRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioService {
     private final UsuarioRepository repository;
+    private final ReservaRepository reservaRepository;
 
-    public UsuarioService(UsuarioRepository repository) {
+    public UsuarioService(UsuarioRepository repository, ReservaRepository reservaRepository) {
         this.repository = repository;
+        this.reservaRepository = reservaRepository;
     }
 
     public UsuarioDto realizarLogin(UsuarioDto usuarioDto) {
@@ -88,7 +91,14 @@ public class UsuarioService {
     }
 
     public void excluir(Long id) {
-        this.repository.deleteById(id);
+        if (reservaRepository.existsByUsuarioId(id)) {
+
+            throw new RuntimeException(
+                    "Não é possível excluir este usuário porque ele possui reservas cadastradas."
+            );
+
+        }
+        repository.deleteById(id);
     }
 
     private UsuarioDto converterEntityParaDto(UsuarioEntity usuario) {

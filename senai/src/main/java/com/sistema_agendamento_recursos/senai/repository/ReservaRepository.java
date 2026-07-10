@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
 
+    boolean existsByUsuarioId(Long usuarioId);
+
+    boolean existsByRecursoId(Long recursoId);
 }
