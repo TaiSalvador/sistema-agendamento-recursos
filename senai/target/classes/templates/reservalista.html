@@ -56,10 +56,19 @@
 
     <h2>Lista de Reservas</h2>
 
-    <a class="btn btn-success"
-       th:href="@{/reservainserir}">
-      Nova Reserva
-    </a>
+    <div>
+
+      <a class="btn btn-danger me-2"
+         th:href="@{/reservalistacancelada}">
+        Reservas Canceladas
+      </a>
+
+      <a class="btn btn-success"
+         th:href="@{/reservainserir}">
+        Nova Reserva
+      </a>
+
+    </div>
 
   </div>
 
@@ -90,7 +99,8 @@
 
         <tbody>
 
-        <tr th:each="reserva : ${reservas}">
+        <tr th:each="reserva : ${reservas}"
+            th:if="${reserva.dataCancelamento == null}">
 
           <td th:text="${reserva.id}"></td>
 
@@ -116,9 +126,11 @@
         </tr>
 
         <tr th:if="${#lists.isEmpty(reservas)}">
+
           <td colspan="7" class="text-center">
             Nenhuma reserva cadastrada.
           </td>
+
         </tr>
 
         </tbody>
