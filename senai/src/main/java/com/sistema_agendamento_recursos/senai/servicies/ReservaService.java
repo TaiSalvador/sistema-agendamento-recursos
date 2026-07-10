@@ -1,6 +1,7 @@
 package com.sistema_agendamento_recursos.senai.servicies;
 
 import com.sistema_agendamento_recursos.senai.dtos.ReservaDto;
+import com.sistema_agendamento_recursos.senai.entities.DiaSemana;
 import com.sistema_agendamento_recursos.senai.entities.RecursoEntity;
 import com.sistema_agendamento_recursos.senai.entities.ReservaEntity;
 import com.sistema_agendamento_recursos.senai.entities.UsuarioEntity;
@@ -98,7 +99,24 @@ public class ReservaService {
 
         }
 
+        // Verifica se a data está dentro do período permitido do recurso
+        if (dto.getData().isBefore(recurso.getDataInicialAgendamento())
+                || dto.getData().isAfter(recurso.getDataFinalAgendamento())) {
+            throw new RuntimeException("A data da reserva está fora do período permitido para este recurso.");
+        }
 
+// Verifica se o horário está dentro do horário permitido do recurso
+        if (dto.getHoraInicial().isBefore(recurso.getHoraInicialAgendamento())
+                || dto.getHoraFinal().isAfter(recurso.getHoraFinalAgendamento())) {
+            throw new RuntimeException("O horário informado está fora do horário permitido para este recurso.");
+        }
+
+// Verifica se o dia da semana é permitido
+        DiaSemana diaReserva = DiaSemana.valueOf(dto.getData().getDayOfWeek().name());
+
+        if (!recurso.getDiasDisponiveis().contains(diaReserva)) {
+            throw new RuntimeException("Este recurso não está disponível no dia da semana informado.");
+        }
 
         for (ReservaEntity reserva : repository.findAll()) {
 
