@@ -5,6 +5,7 @@ import com.sistema_agendamento_recursos.senai.entities.RecursoEntity;
 import com.sistema_agendamento_recursos.senai.repository.RecursoRepository;
 import com.sistema_agendamento_recursos.senai.repository.ReservaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,11 +49,13 @@ public class RecursoService {
 
         repository.save(toEntity(dto));
     }
+
+    @Transactional
     public void excluir(Long id) {
 
         System.out.println("ID recebido: " + id);
 
-        boolean existe = reservaRepository.existsByRecursoId(id);
+        boolean existe = reservaRepository.existsByRecursoIdAndDataCancelamentoIsNull(id);
 
         System.out.println("Existe reserva: " + existe);
 
@@ -61,6 +64,8 @@ public class RecursoService {
                     "Não é possível excluir este recurso porque ele possui reservas cadastradas."
             );
         }
+
+        reservaRepository.deleteByRecursoIdAndDataCancelamentoIsNotNull(id);
 
         repository.deleteById(id);
     }

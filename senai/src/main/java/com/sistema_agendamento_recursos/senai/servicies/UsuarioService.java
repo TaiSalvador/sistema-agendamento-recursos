@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
@@ -96,14 +97,17 @@ public class UsuarioService {
 
     }
 
+    @Transactional
     public void excluir(Long id) {
-        if (reservaRepository.existsByUsuarioId(id)) {
 
+        if (reservaRepository.existsByUsuarioIdAndDataCancelamentoIsNull(id)) {
             throw new RuntimeException(
-                    "Não é possível excluir este usuário porque ele possui reservas cadastradas."
+                    "Não é possível excluir este usuário porque possui reservas ativas."
             );
-
         }
+
+        reservaRepository.deleteByUsuarioIdAndDataCancelamentoIsNotNull(id);
+
         repository.deleteById(id);
     }
 

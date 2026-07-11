@@ -70,14 +70,35 @@ public class UsuarioController {
 
         try {
             service.usuarioInserir(usuarioDto);
+
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("data de nascimento")) {
-                bindingResult.rejectValue("dataNascimento", "data.invalida", e.getMessage()
+
+            if (e.getMessage().contains("e-mail")) {
+
+                bindingResult.rejectValue(
+                        "email",
+                        "email.duplicado",
+                        e.getMessage()
                 );
-            } else {
-                bindingResult.rejectValue("email", "email.duplicado", e.getMessage()
+
+            } else if (e.getMessage().contains("matrícula")) {
+
+                bindingResult.rejectValue(
+                        "matricula",
+                        "matricula.duplicada",
+                        e.getMessage()
                 );
+
+            } else if (e.getMessage().contains("data de nascimento")) {
+
+                bindingResult.rejectValue(
+                        "dataNascimento",
+                        "data.invalida",
+                        e.getMessage()
+                );
+
             }
+
             return "usuarioinserir";
         }
 
